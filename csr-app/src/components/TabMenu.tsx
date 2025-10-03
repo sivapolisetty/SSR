@@ -1,4 +1,29 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
+import { Container, FlexContainer } from './styled/CommonComponents';
+import { theme } from '../styles/theme';
+
+const TabWrapper = styled.div`
+  border-bottom: 2px solid ${theme.colors.border};
+  background-color: ${theme.colors.background};
+`;
+
+const TabButton = styled.button<{ $isActive: boolean }>`
+  padding: 1rem 2rem;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  border-bottom: 3px solid ${props => props.$isActive ? theme.colors.primary : 'transparent'};
+  color: ${props => props.$isActive ? theme.colors.primary : theme.colors.textLight};
+  font-weight: ${props => props.$isActive ? theme.typography.fontWeight.bold : theme.typography.fontWeight.normal};
+  font-size: ${theme.typography.fontSize.md};
+  transition: ${theme.transitions.fast};
+  
+  &:hover {
+    color: ${theme.colors.primary};
+    background-color: ${theme.colors.surface};
+  }
+`;
 
 interface TabMenuProps {
   onTabChange: (tab: string) => void;
@@ -12,6 +37,7 @@ const TabMenu: React.FC<TabMenuProps> = ({ onTabChange }) => {
     { id: 'ssr-html', label: '🟢 SSR HTML in CSR' },
     { id: 'hydrated', label: '🔄 SSR + Hydration (OLD)' },
     { id: 'proper-hydration', label: '⚡ Proper React Hydration' },
+    { id: 'styled-components', label: '🎨 Styled Components' },
     { id: 'products', label: 'SSR Products' },
     { id: 'users', label: 'SSR User Profiles' },
     { id: 'mixed', label: 'Mixed Components' }
@@ -23,35 +49,21 @@ const TabMenu: React.FC<TabMenuProps> = ({ onTabChange }) => {
   };
 
   return (
-    <div style={{
-      borderBottom: '2px solid #e5e7eb',
-      backgroundColor: 'white'
-    }}>
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        display: 'flex'
-      }}>
-        {tabs.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => handleTabClick(tab.id)}
-            style={{
-              padding: '1rem 2rem',
-              border: 'none',
-              backgroundColor: 'transparent',
-              cursor: 'pointer',
-              borderBottom: activeTab === tab.id ? '3px solid #2563eb' : '3px solid transparent',
-              color: activeTab === tab.id ? '#2563eb' : '#6b7280',
-              fontWeight: activeTab === tab.id ? 'bold' : 'normal',
-              fontSize: '1rem'
-            }}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-    </div>
+    <TabWrapper>
+      <Container maxWidth="1200px" padding="0">
+        <FlexContainer gap="0">
+          {tabs.map(tab => (
+            <TabButton
+              key={tab.id}
+              onClick={() => handleTabClick(tab.id)}
+              $isActive={activeTab === tab.id}
+            >
+              {tab.label}
+            </TabButton>
+          ))}
+        </FlexContainer>
+      </Container>
+    </TabWrapper>
   );
 };
 

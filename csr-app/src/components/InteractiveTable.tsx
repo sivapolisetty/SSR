@@ -1,4 +1,54 @@
 import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { Card, Subtitle, Text, Table, TableHeader, TableRow, TableHeaderCell, TableCell, Badge } from './styled/CommonComponents';
+import { theme } from '../styles/theme';
+
+const TableWrapper = styled(Card)`
+  border: 3px solid ${theme.colors.primary};
+  background-color: ${theme.colors.primaryLight};
+  margin: ${theme.spacing.lg};
+`;
+
+const StatusSection = styled.div`
+  background-color: ${theme.colors.primaryLight};
+  padding: ${theme.spacing.md};
+  border-radius: ${theme.borderRadius.md};
+  margin-bottom: ${theme.spacing.md};
+`;
+
+const TableContainer = styled.div`
+  background-color: ${theme.colors.surface};
+  padding: ${theme.spacing.md};
+  border-radius: ${theme.borderRadius.md};
+  margin-bottom: ${theme.spacing.md};
+`;
+
+const StyledTableRow = styled(TableRow)<{ $isSelected: boolean }>`
+  background-color: ${props => props.$isSelected ? theme.colors.accentLight : theme.colors.background};
+  
+  &:hover {
+    background-color: ${props => props.$isSelected ? theme.colors.accentLight : theme.colors.surface};
+  }
+`;
+
+const StockCell = styled(TableCell)<{ $stock: number }>`
+  color: ${props => props.$stock > 10 ? theme.colors.secondary : props.$stock > 5 ? theme.colors.accent : theme.colors.error};
+  font-weight: ${theme.typography.fontWeight.bold};
+`;
+
+const FooterNote = styled.div`
+  font-size: ${theme.typography.fontSize.sm};
+  color: ${theme.colors.textLight};
+  font-style: italic;
+  background-color: ${theme.colors.surface};
+  padding: ${theme.spacing.sm};
+  border-radius: ${theme.borderRadius.sm};
+`;
+
+const SelectedText = styled.span<{ $hasSelection: boolean }>`
+  color: ${props => props.$hasSelection ? theme.colors.secondary : theme.colors.accent};
+  font-weight: ${theme.typography.fontWeight.bold};
+`;
 
 interface Product {
   id: number;
@@ -23,7 +73,6 @@ const InteractiveTable: React.FC<InteractiveTableProps> = ({
   const [selectedId, setSelectedId] = useState<number | null>(initialSelectedId);
 
   useEffect(() => {
-    // Notify parent component of selection changes
     if (onSelectionChange && selectedId !== null) {
       onSelectionChange(selectedId);
     }
@@ -32,7 +81,6 @@ const InteractiveTable: React.FC<InteractiveTableProps> = ({
   const handleRowClick = (rowId: number) => {
     setSelectedId(rowId);
     
-    // For SSR components embedded in CSR, also use window messaging
     if (typeof window !== 'undefined' && window.parent) {
       window.parent.postMessage({
         type: 'ROW_SELECTED',
@@ -46,123 +94,69 @@ const InteractiveTable: React.FC<InteractiveTableProps> = ({
   };
 
   return (
-    <div style={{ 
-      padding: '20px', 
-      border: '3px solid #2196f3',
-      backgroundColor: '#e3f2fd',
-      margin: '20px',
-      borderRadius: '8px'
-    }}>
-      <h2 style={{ color: '#1976d2', marginTop: 0 }}>
+    <TableWrapper>
+      <Subtitle color={theme.colors.primaryDark}>
         🔄 Interactive Product Table {isSSR ? '(SSR)' : '(CSR)'}
-      </h2>
-      <p style={{ fontSize: '16px', fontWeight: 'bold', color: '#1565c0' }}>
+      </Subtitle>
+      <Text size="md" weight="bold" color={theme.colors.primaryDark}>
         Generated at: {new Date().toISOString()}
-      </p>
+      </Text>
       
-      <div style={{ 
-        backgroundColor: '#bbdefb',
-        padding: '15px',
-        borderRadius: '5px',
-        marginBottom: '15px'
-      }}>
-        <h3 style={{ marginTop: 0, color: '#0d47a1' }}>
-          Currently Selected: <span style={{ 
-            color: selectedId ? '#2e7d32' : '#f57c00',
-            fontWeight: 'bold'
-          }}>
+      <StatusSection>
+        <Text size="lg" weight="semibold" color={theme.colors.primaryDark}>
+          Currently Selected: <SelectedText $hasSelection={!!selectedId}>
             {selectedId ? `Row ${selectedId} - ${data.find(item => item.id === selectedId)?.name || 'Unknown'}` : 'None'}
-          </span>
-        </h3>
-        <p style={{ margin: '5px 0', fontSize: '14px' }}>
+          </SelectedText>
+        </Text>
+        <Text size="sm">
           Click any row below to select it. State will sync with parent component!
-        </p>
-      </div>
+        </Text>
+      </StatusSection>
       
-      <div style={{ 
-        backgroundColor: '#e1f5fe',
-        padding: '15px',
-        borderRadius: '5px',
-        marginBottom: '15px'
-      }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#90caf9' }}>
-              <th style={{ padding: '12px', border: '1px solid #2196f3', textAlign: 'left' }}>ID</th>
-              <th style={{ padding: '12px', border: '1px solid #2196f3', textAlign: 'left' }}>Product</th>
-              <th style={{ padding: '12px', border: '1px solid #2196f3', textAlign: 'left' }}>Price</th>
-              <th style={{ padding: '12px', border: '1px solid #2196f3', textAlign: 'left' }}>Stock</th>
-              <th style={{ padding: '12px', border: '1px solid #2196f3', textAlign: 'left' }}>Status</th>
+      <TableContainer>
+        <Table>
+          <TableHeader>
+            <tr>
+              <TableHeaderCell>ID</TableHeaderCell>
+              <TableHeaderCell>Product</TableHeaderCell>
+              <TableHeaderCell>Price</TableHeaderCell>
+              <TableHeaderCell>Stock</TableHeaderCell>
+              <TableHeaderCell>Status</TableHeaderCell>
             </tr>
-          </thead>
+          </TableHeader>
           <tbody>
             {data.map(item => (
-              <tr 
+              <StyledTableRow 
                 key={item.id}
                 onClick={() => handleRowClick(item.id)}
-                style={{ 
-                  cursor: 'pointer',
-                  backgroundColor: selectedId === item.id ? '#fff3e0' : 'white',
-                  transition: 'background-color 0.2s'
-                }}
-                onMouseEnter={(e) => {
-                  if (selectedId !== item.id) {
-                    (e.target as HTMLElement).style.backgroundColor = '#f5f5f5';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (selectedId !== item.id) {
-                    (e.target as HTMLElement).style.backgroundColor = 'white';
-                  }
-                }}
+                clickable
+                $isSelected={selectedId === item.id}
               >
-                <td style={{ padding: '10px', border: '1px solid #2196f3' }}>{item.id}</td>
-                <td style={{ padding: '10px', border: '1px solid #2196f3', fontWeight: 'bold' }}>
-                  {item.name}
-                </td>
-                <td style={{ padding: '10px', border: '1px solid #2196f3' }}>${item.price}</td>
-                <td style={{ 
-                  padding: '10px', 
-                  border: '1px solid #2196f3',
-                  color: item.stock > 10 ? 'green' : item.stock > 5 ? 'orange' : 'red',
-                  fontWeight: 'bold'
-                }}>
+                <TableCell>{item.id}</TableCell>
+                <TableCell>
+                  <Text weight="bold">{item.name}</Text>
+                </TableCell>
+                <TableCell>${item.price}</TableCell>
+                <StockCell $stock={item.stock}>
                   {item.stock}
-                </td>
-                <td style={{ 
-                  padding: '10px', 
-                  border: '1px solid #2196f3'
-                }}>
-                  <span style={{
-                    padding: '4px 8px',
-                    borderRadius: '4px',
-                    fontSize: '12px',
-                    fontWeight: 'bold',
-                    color: 'white',
-                    backgroundColor: item.stock > 5 ? '#4caf50' : '#f44336'
-                  }}>
+                </StockCell>
+                <TableCell>
+                  <Badge variant={item.stock > 5 ? 'success' : 'error'} size="sm">
                     {item.stock > 5 ? 'In Stock' : 'Low Stock'}
-                  </span>
-                </td>
-              </tr>
+                  </Badge>
+                </TableCell>
+              </StyledTableRow>
             ))}
           </tbody>
-        </table>
-      </div>
+        </Table>
+      </TableContainer>
       
-      <div style={{ 
-        fontSize: '14px',
-        color: '#666',
-        fontStyle: 'italic',
-        backgroundColor: '#f5f5f5',
-        padding: '10px',
-        borderRadius: '4px'
-      }}>
+      <FooterNote>
         ✨ <strong>{isSSR ? 'SSR' : 'CSR'} Component:</strong> This is a proper React component 
         {isSSR ? ' that can be server-side rendered and then hydrated' : ' rendered entirely on the client side'}.
         Selection state: <strong>{selectedId || 'None'}</strong>
-      </div>
-    </div>
+      </FooterNote>
+    </TableWrapper>
   );
 };
 

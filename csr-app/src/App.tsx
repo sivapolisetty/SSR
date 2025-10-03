@@ -7,6 +7,7 @@ import CSRDemo from './pages/CSRDemo';
 import SSRHtmlSection from './components/SSRHtmlSection';
 import HydratedSSRSection from './components/HydratedSSRSection';
 import ProperHydrationDemo from './components/ProperHydrationDemo';
+import StyledComponentsExample from './components/StyledComponentsExample';
 
 function App() {
   const [activeTab, setActiveTab] = useState('csr-demo');
@@ -91,6 +92,7 @@ function App() {
             <ProperHydrationDemo />
           </div>
         )}
+        {activeTab === 'styled-components' && <StyledComponentsExample />}
         <ProductsSection visible={activeTab === 'products'} />
         <UsersSection visible={activeTab === 'users'} />
         <MixedSection visible={activeTab === 'mixed'} />
