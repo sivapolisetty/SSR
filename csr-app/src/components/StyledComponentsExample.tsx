@@ -47,7 +47,7 @@ const StyledComponentsExample: React.FC = () => {
             {isLoading ? <Spinner size="16px" color="white" /> : 'Primary'}
           </Button>
           <Button variant="secondary">Secondary</Button>
-          <Button variant="accent">Accent</Button>
+          <Button variant="secondary">Secondary Alt</Button>
           <Button variant="ghost">Ghost</Button>
           <Button variant="danger">Danger</Button>
           <Button variant="primary" size="sm">Small</Button>
@@ -191,7 +191,7 @@ const StyledComponentsExample: React.FC = () => {
         <GridContainer columns="repeat(4, 1fr)" gap="0.5rem">
           <Badge variant="primary">1</Badge>
           <Badge variant="secondary">2</Badge>
-          <Badge variant="accent">3</Badge>
+          <Badge variant="warning">3</Badge>
           <Badge variant="info">4</Badge>
         </GridContainer>
       </Card>

@@ -30,17 +30,15 @@ interface TabMenuProps {
 }
 
 const TabMenu: React.FC<TabMenuProps> = ({ onTabChange }) => {
-  const [activeTab, setActiveTab] = useState('csr-demo');
+  const [activeTab, setActiveTab] = useState('counter-demo');
 
   const tabs = [
+    { id: 'counter-demo', label: '🎯 Simple Counter Island' },
+    { id: 'islands-demo', label: '🏝️ Full Islands Demo' },
     { id: 'csr-demo', label: '🔴 CSR Demo' },
     { id: 'ssr-html', label: '🟢 SSR HTML in CSR' },
-    { id: 'hydrated', label: '🔄 SSR + Hydration (OLD)' },
     { id: 'proper-hydration', label: '⚡ Proper React Hydration' },
-    { id: 'styled-components', label: '🎨 Styled Components' },
-    { id: 'products', label: 'SSR Products' },
-    { id: 'users', label: 'SSR User Profiles' },
-    { id: 'mixed', label: 'Mixed Components' }
+    { id: 'styled-components', label: '🎨 Styled Components' }
   ];
 
   const handleTabClick = (tabId: string) => {

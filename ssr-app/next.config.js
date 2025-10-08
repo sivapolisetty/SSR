@@ -12,6 +12,11 @@ const nextConfig = {
         exposes: {
           './ProductCard': './src/components/ProductCard',
           './UserProfile': './src/components/UserProfile',
+          './InteractiveDataTable': './src/islands/InteractiveDataTable',
+          './WeatherWidget': './src/islands/WeatherWidget',
+          './ShoppingCart': './src/islands/ShoppingCart',
+          './Counter': './src/islands/Counter',
+          './InteractiveCounter': './src/islands/InteractiveCounter',
         },
         shared: {
           react: {

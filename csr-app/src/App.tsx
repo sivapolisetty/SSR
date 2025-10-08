@@ -4,13 +4,15 @@ import Header from './components/Header';
 import TabMenu from './components/TabMenu';
 import { ProductsSection, UsersSection, MixedSection } from './components/FederatedComponents';
 import CSRDemo from './pages/CSRDemo';
+import IslandsDemo from './pages/IslandsDemo';
+import CounterDemo from './pages/CounterDemo';
 import SSRHtmlSection from './components/SSRHtmlSection';
 import HydratedSSRSection from './components/HydratedSSRSection';
 import ProperHydrationDemo from './components/ProperHydrationDemo';
 import StyledComponentsExample from './components/StyledComponentsExample';
 
 function App() {
-  const [activeTab, setActiveTab] = useState('csr-demo');
+  const [activeTab, setActiveTab] = useState('counter-demo');
 
   return (
     <div className="App">
@@ -44,6 +46,8 @@ function App() {
         </div>
 
         {activeTab === 'csr-demo' && <CSRDemo />}
+        {activeTab === 'islands-demo' && <IslandsDemo />}
+        {activeTab === 'counter-demo' && <CounterDemo />}
         {activeTab === 'ssr-html' && (
           <div>
             <h1 style={{ textAlign: 'center', color: '#2e7d32' }}>
